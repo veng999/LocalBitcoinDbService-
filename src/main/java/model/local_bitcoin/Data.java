@@ -1,14 +1,11 @@
-package model;
+package model.local_bitcoin;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
-
 @lombok.Data
 @JsonIgnoreProperties(ignoreUnknown = true)
     public class Data {
-
         @JsonProperty(value = "profile")
         Profile prof;
         @JsonProperty(value = "require_feedback_score")
@@ -50,7 +47,7 @@ import java.util.Date;
         @JsonProperty(value = "limit_to_fiat_amounts")
         private String limitToFiatAmounts;
         @JsonProperty(value = "created_at")
-        private Date createdAt;
+        private String createdAt;
         @JsonProperty(value = "max_amount")
         private Integer maxAmount;
         private Integer lon;
@@ -67,6 +64,8 @@ import java.util.Date;
         private Boolean requireIdentification;
         @JsonProperty(value = "volume_coefficient_btc")
         private String volumeCoefficientBtc;
-    }
+
+
+}
 
 

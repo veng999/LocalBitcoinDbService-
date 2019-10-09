@@ -1,14 +1,13 @@
-package model;
+package model.domain;
 
-import java.util.Date;
+import lombok.Data;
 
-@lombok.Data
+@Data
 public class UsersDataModel {
-
     private String username;
     private Integer feedbackScore;
-    private Date lastOnline;
-    private Date createdAt;
+    private String lastOnline;
+    private String createdAt;
     private String tradeType;
     private String tempPrice;
     private String bankName;

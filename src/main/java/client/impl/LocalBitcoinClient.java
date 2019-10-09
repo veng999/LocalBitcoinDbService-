@@ -1,12 +1,10 @@
 package client.impl;
 
-import model.LocalBitcoinModel;
-import model.UsersDataModel;
+import model.local_bitcoin.LocalBitcoinModel;
+import model.domain.UsersDataModel;
 
 public interface LocalBitcoinClient {
-
     LocalBitcoinModel methodGet();
-    void methodPost(UsersDataModel fildsInDatabase);
-
-
+    void methodPost(String url, UsersDataModel fildsInDatabase);
+    void methodRemove(String url);
 }

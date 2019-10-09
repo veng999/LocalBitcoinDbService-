@@ -2,24 +2,27 @@ package client;
 
 import client.impl.LocalBitcoinClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.LocalBitcoinModel;
-import model.UsersDataModel;
+import com.google.gson.Gson;
+import model.domain.UsersDataModel;
+import model.local_bitcoin.LocalBitcoinModel;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
 import java.net.URI;
-
 
 
 public class LocalBitcoinClientImpl implements LocalBitcoinClient {
 
     @Override
-    public LocalBitcoinModel methodGet()  {
+    public LocalBitcoinModel methodGet() {
         try{
             String url = "https://localbitcoins.net//buy-bitcoins-online/RU/Russian_Federation/.json";
             HttpClient client = HttpClientBuilder.create().build();
@@ -27,27 +30,37 @@ public class LocalBitcoinClientImpl implements LocalBitcoinClient {
             HttpResponse response = client.execute(requestGet);
             String responseString = new BasicResponseHandler().handleResponse(response);
             ObjectMapper mapper = new ObjectMapper();
-            LocalBitcoinModel json = mapper.readValue(responseString, LocalBitcoinModel.class);
-            return json;
+            return mapper.readValue(responseString, LocalBitcoinModel.class);
         }catch (IOException e){
             e.printStackTrace();
-            System.out.println("Ошибка в методе methodGet()");
+            throw new RuntimeException("Ошибка при полочении данных от localbitcoin api");
         }
-        return null;
     }
 
     @Override
-    public void methodPost(UsersDataModel fildsInDatabase) {
+    public void methodPost(String url, UsersDataModel fildsInDatabase) {
         try {
-            String string = "";
-            URI url = new URI(string);
-            HttpClient client = HttpClientBuilder.create().build();
-            HttpPost requestPost = new HttpPost(url);
-            StringEntity stringEntity = new StringEntity(fildsInDatabase.toString());
-            requestPost.setEntity(stringEntity);
+            URI uri = new URI(url);
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost requestPost = new HttpPost(uri);
+            Gson gson = new Gson();
+            String entity = gson.toJson(fildsInDatabase);
+            requestPost.setEntity(new StringEntity(entity));
+            requestPost.setHeader("Content-type", "application/json");
+            client.execute(requestPost);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Ошибка в методе methodPost()");
+        }
+    }
+
+    @Override
+    public void methodRemove(String url) {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpDelete delete = new HttpDelete(url);
+        try {
+            client.execute(delete);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
